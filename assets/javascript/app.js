@@ -76,7 +76,7 @@ function startQuiz() {
   renderProgress();
   renderCounter();
   // clearTimeout(timeDelay);
-  // clearInterval(TIMER);
+  clearInterval(TIMER);
   TIMER = setInterval(renderCounter, 1000); // 1000ms = 1s
 }
 
@@ -93,7 +93,7 @@ function renderCounter() {
   if (count <= questionTime) {
     counter.innerHTML = count;
     timeGauge.style.width = count * gaugeUnit + "px";
-    count++
+    count++;
   } else {
     count = 0;
     // change progress color to red
@@ -172,12 +172,13 @@ function scoreRender() {
   scoreDiv.innerHTML = "<img src=" + img + ">";
   scoreDiv.innerHTML += "<p>" + scorePerCent + "%</p>";
   quiz.style.display = "none";
-  let btn = document.createElement("Button");                 
-  let textnode = document.createTextNode("Start Again");         
-  btn.appendChild(textnode);                              
-  scoreDiv.appendChild(btn);
+  // let btn = document.createElement("Button");                 
+  // let textnode = document.createTextNode("Start Again");         
+  // btn.appendChild(textnode);                              
+  // scoreDiv.appendChild(btn);
+  // document.querySelector('button').addEventListener("click", startQuiz);
 }
 
-scoreDiv.addEventListener("click", startQuiz);
+
 
 
