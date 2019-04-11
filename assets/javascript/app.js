@@ -12,6 +12,7 @@ const counter = document.getElementById("counter");
 const timeGauge = document.getElementById("timeGauge");
 const progress = document.getElementById("progress");
 const scoreDiv = document.getElementById("scoreContainer");
+const showYesOrNo = document.getElementById('showYesOrNo')
 // create our questions
 let questions = [
   {
@@ -19,7 +20,7 @@ let questions = [
     imgSrc: "assets/images/usa.jpg",
     choiceA: "Donald Trump",
     choiceB: "Bill Clinton",
-    choiceC: "Mr Biden",
+    choiceC: "Joe Biden",
     correct: "A",
     imgFace: "assets/images/trump.jpg"
   }, {
@@ -34,7 +35,7 @@ let questions = [
     question: "Who is the Leader of Russia?",
     imgSrc: "assets/images/russia.jpg",
     choiceA: "Boris Yeltsin",
-    choiceB: "Andrey Nelepov",
+    choiceB: "Dmitry Medvedev",
     choiceC: "Vladimir Putin",
     correct: "C",
     imgFace: "assets/images/putin.jpg"
@@ -51,10 +52,15 @@ const gaugeWidth = 150; // 150px
 const gaugeUnit = gaugeWidth / questionTime;
 let TIMER;
 let score = 0;
-// let timeDelay;
+let timeDelay;
+let timeDelay1;
+let qIndex;
+// let timeDelay2;
 
 // render a question
 function renderQuestion() {
+
+  clearTimeout(timeDelay);
   let q = questions[runningQuestion];
 
   question.innerHTML = "<p>" + q.question + "</p>";
@@ -62,20 +68,24 @@ function renderQuestion() {
   choiceA.innerHTML = q.choiceA;
   choiceB.innerHTML = q.choiceB;
   choiceC.innerHTML = q.choiceC;
+  TIMER = setInterval(renderCounter, 1000); // 1000ms = 1s
 }
 
 start.addEventListener("click", startQuiz);
 
 // start quiz
+// clearTimeout(timeDelay);
 function startQuiz() {
   start.style.display = "none";
   leader.style.display = "none";
-  yesNo.style.display = 'none';
+  showYesOrNo.style.display = 'none';
   renderQuestion();
   quiz.style.display = "block";
   renderProgress();
   renderCounter();
-  // clearTimeout(timeDelay);
+  runningQuestion = 0;
+  count = 0;
+  // qIndex = 0;
   clearInterval(TIMER);
   TIMER = setInterval(renderCounter, 1000); // 1000ms = 1s
 }
@@ -117,29 +127,43 @@ function checkAnswer(answer) {
     score++;
     // change progress color to green
     answerIsCorrect();
-    // delay startQuiz()
+    clearInterval(TIMER);
+
+    // delay startQuiz() - DOES NOT DELAY!
     // timeDelay = setTimeout(startQuiz, 3000);
-    
-    //show right answer
-    // document.getElementById('yesNo').innerHTML = 'Correct!';
-    // qImg.innerHTML = "<img src = " + questions[runningQuestion].imgFace + ">";
+    showYesOrNo.innerHTML = 'Correct!';
+    showYesOrNo.style.color = 'lightseagreen';
 
 
   } else {
     // answer is wrong
+    document.getElementById('yesNo').style.display = 'block';
+
+    qImg.innerHTML = "<img src = " + questions[runningQuestion].imgFace + ">";
     // change progress color to red
     answerIsWrong();
-    // document.getElementById('yesNo').innerHTML = 'Nope!';
-    // qImg.innerHTML = "<img src = " + questions[runningQuestion].imgFace + ">";
+    document.getElementById('showYesOrNo').innerHTML = 'Nope!';
+    document.getElementById('showYesOrNo').style.color = 'red';
   }
+
+
   count = 0;
   if (runningQuestion < lastQuestion) {
+
+    //show right answer
+    document.getElementById('yesNo').style.display = 'block';
+    qImg.innerHTML = "<img src = " + questions[runningQuestion].imgFace + ">";
+
     runningQuestion++;
-    renderQuestion();
+    // delay startQuiz() 
+    timeDelay = setTimeout(renderQuestion, 3000);
+
   } else {
+
     // end the quiz and show the score
     clearInterval(TIMER);
-    scoreRender();
+    timeDelay1 = setTimeout(scoreRender, 2000);
+    // scoreRender();
   }
 }
 
@@ -155,6 +179,7 @@ function answerIsWrong() {
 
 // score render
 function scoreRender() {
+  clearTimeout(timeDelay1);
   scoreDiv.style.display = "block";
 
   // calculatin the amount of question percent answered by the user
@@ -172,11 +197,17 @@ function scoreRender() {
   scoreDiv.innerHTML = "<img src=" + img + ">";
   scoreDiv.innerHTML += "<p>" + scorePerCent + "%</p>";
   quiz.style.display = "none";
-  // let btn = document.createElement("Button");                 
-  // let textnode = document.createTextNode("Start Again");         
-  // btn.appendChild(textnode);                              
-  // scoreDiv.appendChild(btn);
-  // document.querySelector('button').addEventListener("click", startQuiz);
+  timeDelay2 = setTimeout(showStartBtn, 2000)
+}
+
+function showStartBtn () {
+  start.style.display = "block";
+  leader.style.display = "block";
+  quiz.style.display = "none";
+  scoreDiv.style.display = "none";
+  //delaying
+  clearTimeout(timeDelay2);
+
 }
 
 
